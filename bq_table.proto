@@ -50,4 +50,7 @@ message BigQueryMessageOptions {
   // If true, BigQuery field names will default to a field's JSON name,
   // not its original/proto field name.
   bool use_json_names = 2;
+
+  // If true, BigQuery description fields will not be populated from comments.
+  bool skip_comments = 3;
 }
