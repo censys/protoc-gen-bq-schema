@@ -39,3 +39,21 @@ message Bar {
 message Baz {
   required int32 a = 1;
 }
+
+message Foo {
+    option (gen_bq_schema.bigquery_opts).table_name = "foo_table_without_comments";
+    option (gen_bq_schema.bigquery_opts).skip_comments = true;
+  
+    message Nested {
+      repeated int32 a = 1;
+    }
+  
+    // Description of field a -- this is an int32
+    required int32 a = 1;
+  
+    // Nested b structure
+    optional Nested b = 2;
+  
+    // Repeated c string
+    repeated string c = 3;
+}  

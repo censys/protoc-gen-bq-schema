@@ -63,8 +63,9 @@ message Baz {
 }
 ```
 
-`protoc --bq-schema_out=. foo.proto` will generate a file named `foo/bar_table.schema`.
+`protoc --bq-schema_out=. foo.proto` will generate files named `foo/bar_table.schema` and `foo/foo_table_without_comments.schema`.
 The message `foo.Baz` is ignored because it doesn't have option `gen_bq_schema.bigquery_opts`.
+The message `foo.Foo` will be processed without comments because it has option `(gen_bq_schema.bigquery_opts).skip_comments = true`.
 
 ## License
 

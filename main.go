@@ -247,8 +247,10 @@ func convertField(
 		return nil, fmt.Errorf("unrecognized field type: %s", desc.GetType().String())
 	}
 
-	if comment := comments.Get(path); comment != "" {
-		field.Description = comment
+	if !msgOpts.GetSkipComments() {
+		if comment := comments.Get(path); comment != "" {
+			field.Description = comment
+		}
 	}
 
 	opts := desc.GetOptions()
