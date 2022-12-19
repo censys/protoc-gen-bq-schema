@@ -224,15 +224,21 @@ var (
 func convertField(
 	curPkg *ProtoPackage,
 	desc *descriptor.FieldDescriptorProto,
+	parentOpts *protos.BigQueryMessageOptions,
 	msgOpts *protos.BigQueryMessageOptions,
 	parentMessages map[*descriptor.DescriptorProto]bool,
 	comments Comments,
 	path string) (*Field, error) {
 
+	opts := msgOpts
+	if opts == nil {
+		opts = parentOpts
+	}
+
 	field := &Field{
 		Name: desc.GetName(),
 	}
-	if msgOpts.GetUseJsonNames() && desc.GetJsonName() != "" {
+	if opts.GetUseJsonNames() && desc.GetJsonName() != "" {
 		field.Name = desc.GetJsonName()
 	}
 
@@ -243,7 +249,7 @@ func convertField(
 	}
 
 	// If scalar fields are required and this field is not a message, set the mode to 'REQUIRED'.
-	if msgOpts.GetRequireScalarFields() {
+	if opts.GetRequireScalarFields() {
 		if desc.GetType() != descriptor.FieldDescriptorProto_TYPE_MESSAGE && field.Mode == "NULLABLE" {
 			field.Mode = "REQUIRED"
 		}
@@ -254,15 +260,15 @@ func convertField(
 		return nil, fmt.Errorf("unrecognized field type: %s", desc.GetType().String())
 	}
 
-	if !msgOpts.GetSkipComments() {
+	if !opts.GetSkipComments() {
 		if comment := comments.Get(path); comment != "" {
 			field.Description = comment
 		}
 	}
 
-	opts := desc.GetOptions()
-	if opts != nil && proto.HasExtension(opts, protos.E_Bigquery) {
-		opt := proto.GetExtension(opts, protos.E_Bigquery).(*protos.BigQueryFieldOptions)
+	fieldOpts := desc.GetOptions()
+	if fieldOpts != nil && proto.HasExtension(fieldOpts, protos.E_Bigquery) {
+		opt := proto.GetExtension(fieldOpts, protos.E_Bigquery).(*protos.BigQueryFieldOptions)
 		if opt.Ignore {
 			// skip the field below
 			return nil, nil
@@ -301,7 +307,7 @@ func convertField(
 	if err != nil {
 		return nil, err
 	}
-	field.Fields, err = convertMessageType(curPkg, recordType, fieldMsgOpts, parentMessages, comments, path)
+	field.Fields, err = convertMessageType(curPkg, recordType, opts, fieldMsgOpts, parentMessages, comments, path)
 	if err != nil {
 		return nil, err
 	}
@@ -316,7 +322,8 @@ func convertField(
 func convertMessageType(
 	curPkg *ProtoPackage,
 	msg *descriptor.DescriptorProto,
-	opts *protos.BigQueryMessageOptions,
+	parentOpts *protos.BigQueryMessageOptions,
+	msgOpts *protos.BigQueryMessageOptions,
 	parentMessages map[*descriptor.DescriptorProto]bool,
 	comments Comments,
 	path string) (schema []*Field, err error) {
@@ -333,7 +340,7 @@ func convertMessageType(
 	parentMessages[msg] = true
 	for fieldIndex, fieldDesc := range msg.GetField() {
 		fieldCommentPath := fmt.Sprintf("%s.%d.%d", path, fieldPath, fieldIndex)
-		field, err := convertField(curPkg, fieldDesc, opts, parentMessages, comments, fieldCommentPath)
+		field, err := convertField(curPkg, fieldDesc, parentOpts, msgOpts, parentMessages, comments, fieldCommentPath)
 		if err != nil {
 			glog.Errorf("Failed to convert field %s in %s: %v", fieldDesc.GetName(), msg.GetName(), err)
 			return nil, err
@@ -374,7 +381,7 @@ func convertFile(file *descriptor.FileDescriptorProto) ([]*plugin.CodeGeneratorR
 		}
 
 		glog.V(2).Info("Generating schema for a message type ", msg.GetName())
-		schema, err := convertMessageType(pkg, msg, opts, make(map[*descriptor.DescriptorProto]bool), comments, path)
+		schema, err := convertMessageType(pkg, msg, opts, opts, make(map[*descriptor.DescriptorProto]bool), comments, path)
 		if err != nil {
 			glog.Errorf("Failed to convert %s: %v", name, err)
 			return nil, err

@@ -13,9 +13,11 @@ import "common.proto";
 message Bar {
   option (gen_bq_schema.bigquery_opts).table_name = "bar_proto3_table_required";
   option (gen_bq_schema.bigquery_opts).require_scalar_fields = true;
+  option (gen_bq_schema.bigquery_opts).skip_comments = true;
 
   message Nested {
-    repeated int32 a = 1;
+    // This comment shoul be skipped
+    int32 a = 1;
   }
 
   // Description of field a -- this is an int32
