@@ -53,4 +53,7 @@ message BigQueryMessageOptions {
 
   // If true, BigQuery description fields will not be populated from comments.
   bool skip_comments = 3;
+
+  // If true, mark all non-message fields as required.
+  bool require_scalar_fields = 4;
 }

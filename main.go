@@ -242,6 +242,13 @@ func convertField(
 		return nil, fmt.Errorf("unrecognized field label: %s", desc.GetLabel().String())
 	}
 
+	// If scalar fields are required and this field is not a message, set the mode to 'REQUIRED'.
+	if msgOpts.GetRequireScalarFields() {
+		if desc.GetType() != descriptor.FieldDescriptorProto_TYPE_MESSAGE && field.Mode == "NULLABLE" {
+			field.Mode = "REQUIRED"
+		}
+	}
+
 	field.Type, ok = typeFromFieldType[desc.GetType()]
 	if !ok {
 		return nil, fmt.Errorf("unrecognized field type: %s", desc.GetType().String())
