@@ -1,0 +1,63 @@
+[
+ {
+  "name": "a",
+  "type": "INTEGER",
+  "mode": "REQUIRED"
+ },
+ {
+  "name": "b",
+  "type": "RECORD",
+  "mode": "NULLABLE",
+  "fields": [
+   {
+    "name": "a",
+    "type": "INTEGER",
+    "mode": "REQUIRED"
+   }
+  ]
+ },
+ {
+  "name": "c",
+  "type": "STRING",
+  "mode": "REPEATED"
+ },
+ {
+  "name": "e",
+  "type": "TIMESTAMP",
+  "mode": "REQUIRED"
+ },
+ {
+  "name": "wkt1",
+  "type": "INTEGER",
+  "mode": "NULLABLE"
+ },
+ {
+  "name": "wkt2",
+  "type": "TIMESTAMP",
+  "mode": "NULLABLE"
+ },
+ {
+  "name": "sub_baz",
+  "type": "RECORD",
+  "mode": "NULLABLE",
+  "fields": [
+   {
+    "name": "a",
+    "type": "INTEGER",
+    "mode": "REQUIRED"
+   }
+  ]
+ },
+ {
+  "name": "share_data",
+  "type": "RECORD",
+  "mode": "NULLABLE",
+  "fields": [
+   {
+    "name": "data_descriptor",
+    "type": "STRING",
+    "mode": "REQUIRED"
+   }
+  ]
+ }
+]
