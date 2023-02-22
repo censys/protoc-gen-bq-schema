@@ -41,6 +41,9 @@ message BigQueryFieldOptions {
 
   // Customize the name of the field in the BigQuery schema.
   string name = 5;
+
+  // Set a default value
+  string default_value_expression = 6;
 }
 
 

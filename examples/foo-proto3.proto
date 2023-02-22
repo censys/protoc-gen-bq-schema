@@ -37,7 +37,11 @@ message Bar {
   ];
 
   google.protobuf.Int32Value wkt1 = 11;
-  google.protobuf.Timestamp wkt2 = 12;
+  google.protobuf.Timestamp wkt2 = 12 [
+    (gen_bq_schema.bigquery) = {
+      default_value_expression: "CURRENT_TIMESTAMP()"
+    }
+  ];
 
   // Sub-message within the file
   Baz sub_baz = 13;
