@@ -57,11 +57,12 @@ var (
 
 // Field describes the schema of a field in BigQuery.
 type Field struct {
-	Name        string   `json:"name"`
-	Type        string   `json:"type"`
-	Mode        string   `json:"mode"`
-	Description string   `json:"description,omitempty"`
-	Fields      []*Field `json:"fields,omitempty"`
+	Name                   string   `json:"name"`
+	Type                   string   `json:"type"`
+	Mode                   string   `json:"mode"`
+	Description            string   `json:"description,omitempty"`
+	Fields                 []*Field `json:"fields,omitempty"`
+	DefaultValueExpression string   `json:"default_value_expression,omitempty"`
 }
 
 // ProtoPackage describes a package of Protobuf, which is an container of message types.
@@ -288,6 +289,10 @@ func convertField(
 
 		if len(opt.Description) > 0 {
 			field.Description = opt.Description
+		}
+
+		if len(opt.DefaultValueExpression) > 0 {
+			field.DefaultValueExpression = opt.DefaultValueExpression
 		}
 	}
 

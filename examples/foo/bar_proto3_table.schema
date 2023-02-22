@@ -38,7 +38,8 @@
  {
   "name": "wkt2",
   "type": "TIMESTAMP",
-  "mode": "NULLABLE"
+  "mode": "NULLABLE",
+  "default_value_expression": "CURRENT_TIMESTAMP()"
  },
  {
   "name": "sub_baz",
