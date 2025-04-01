@@ -222,6 +222,15 @@ var (
 	}
 )
 
+// uint64AsBignumericOpt handles --bq-schema_opt=uint64-as-bignumeric in protoc params.
+// providing that param tells protoc-gen-bq-schema to treat uint64 as BIGNUMERIC.
+func uint64AsBignumericOpt(requestParam string) {
+	if !strings.Contains(requestParam, "uint64-as-bignumeric") {
+		return
+	}
+	typeFromFieldType[descriptor.FieldDescriptorProto_TYPE_UINT64] = "BIGNUMERIC"
+}
+
 func convertField(
 	curPkg *ProtoPackage,
 	desc *descriptor.FieldDescriptorProto,
@@ -430,6 +439,8 @@ func convert(req *plugin.CodeGeneratorRequest) (*plugin.CodeGeneratorResponse, e
 	for _, file := range req.GetFileToGenerate() {
 		generateTargets[file] = true
 	}
+
+	uint64AsBignumericOpt(req.GetParameter())
 
 	res := &plugin.CodeGeneratorResponse{}
 	for _, file := range req.GetProtoFile() {
