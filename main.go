@@ -229,6 +229,7 @@ func uint64AsBignumericOpt(requestParam string) {
 		return
 	}
 	typeFromFieldType[descriptor.FieldDescriptorProto_TYPE_UINT64] = "BIGNUMERIC"
+	typeFromWKT[".google.protobuf.UInt64Value"] = "BIGNUMERIC"
 }
 
 func convertField(
